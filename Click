@@ -1,25 +1,6 @@
- Private Declare Auto Function PostMessage Lib "user32.dll" (ByVal hwnd As IntPtr, ByVal wMsg As Integer, ByVal wParam As Integer, ByVal lParam As Integer) As Integer
-    Private Declare Auto Function GetParent Lib "user32.dll" (ByVal hWnd As IntPtr) As IntPtr
+Private Shared Function SendMessage(ByVal hWnd As IntPtr, ByVal Msg As Int32, ByVal wParam As IntPtr, ByVal lParam As StringBuilder) As IntPtr
 
-    Public Const WM_LBUTTONDOWN = &H201
-    Public Const WM_LBUTTONUP = &H202
-    Public Const MK_LBUTTON = &H1
+Const WM_GETTEXT As Int32 = &HD
 
-    Dim parentobjecthandle As IntPtr
-
-    Private Function MakeDWord(ByVal LoWord As Integer, ByVal HiWord As Integer) As Long
-        MakeDWord = (HiWord * &H10000) Or (LoWord And &HFFFF&)
-        ' Construct the 32bit Integer based on the 2x 16bit HI / LOW values
-    End Function
-
-    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
-
-        parentobjecthandle = TextBox1.Text
-
-        PostMessage(parentobjecthandle, WM_LBUTTONDOWN, MK_LBUTTON, MakeDWord(142, 84))
-        PostMessage(parentobjecthandle, WM_LBUTTONUP, 0, MakeDWord(142, 84))
-        ' Play button on program
-        ' The '142' and '84' values were obtained from the orginal programs windows messages when a button click was performed
-        ' Use Winspector to monitor messages being sent to the parent object of the button you wish to control this allows you to obtain the above values
-
-    End Sub
+Dim sb As StringBuilder = New StringBuilder(256)
+    SendMessage(hWnd, WM_GETTEXT, CType(256, IntPtr), sb)
