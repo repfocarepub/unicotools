@@ -4,3 +4,8 @@ Const WM_GETTEXT As Int32 = &HD
 
 Dim sb As StringBuilder = New StringBuilder(256)
     SendMessage(hWnd, WM_GETTEXT, CType(256, IntPtr), sb)
+
+
+    <DllImport("user32.dll")>
+    Public Shared Function MoveWindow(ByVal hWnd As IntPtr, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal bRepaint As Boolean) As Boolean
+    End Function
