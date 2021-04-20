@@ -1,33 +1,31 @@
+ <DllImport("User32.dll", SetLastError:=True)>
+    <MarshalAs(UnmanagedType.Bool)>
+    Private Shared Function PrintWindow(ByVal hwnd As IntPtr, ByVal hDC As IntPtr, ByVal nFlags As UInteger) As Boolean
+    <DllImport("user32.dll")>
+    Private Shared Function GetWindowRect(ByVal handle As IntPtr, ByRef rect As Rectangle) As Boolean
+    <DllImport("user32.dll", SetLastError:=True)>
+    Private Shared Function FindWindow(ByVal lpClassName As String, ByVal lpWindowName As String) As IntPtr
 
-    Public Const SWP_NOMOVE As Short = &H2
-    Public Const SWP_NOSIZE As Short = 1
-    Public Const SWP_NOZORDER As Short = &H4
-    Public Const SWP_SHOWWINDOW As Short = &H40
+    Public Sub CaptureWindow(ByVal handle As IntPtr)
+        Dim rect As Rectangle = New Rectangle()
+        GetWindowRect(handle, rect)
+        rect.Width = rect.Width - rect.X
+        rect.Height = rect.Height - rect.Y
 
-    Public Const SWP_HIDEWINDOW As Short = &H80
+        Using bitmap As Bitmap = New Bitmap(rect.Width, rect.Height)
 
-    Shared ReadOnly HWND_BOTTOM As IntPtr = New IntPtr(1)
+            Using g As Graphics = Graphics.FromImage(bitmap)
+                Dim hdc As IntPtr = g.GetHdc()
 
-    <DllImport("user32.dll", EntryPoint:="SetWindowPos")>
-    Public Shared Function SetWindowPos(
- hWnd As IntPtr,
- hWndInsertAfter As IntPtr,
- x As Int32, y As Int32, cx As Int32, cy As Int32, wFlags As Int32) As IntPtr
-    End Function
+                If Not PrintWindow(handle, hdc, 0) Then
+                    Dim [error] As Integer = Marshal.GetLastWin32Error()
+                    Dim exception = New System.ComponentModel.Win32Exception([error])
+                    Debug.WriteLine("ERROR: " & [error] & ": " & exception.Message)
+                End If
 
+                g.ReleaseHdc(hdc)
+            End Using
 
-
-
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-
-        Dim Processes As Process() = Process.GetProcessesByName("TesteApp")
-
-        For Each p As Process In Processes
-
-            Dim handle As IntPtr = p.MainWindowHandle
-            If handle <> IntPtr.Zero Then
-                SetWindowPos(handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOZORDER Or SWP_NOSIZE Or SWP_HIDEWINDOW)
-            End If
-        Next
-
+            bitmap.Save("Example.png")
+        End Using
     End Sub
