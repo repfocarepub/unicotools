@@ -1,0 +1,35 @@
+  Public Delegate Sub InvokeSimples()
+
+    <STAThread>
+    Public Sub AgentToolbarLeituraTempoStatus()
+        While True
+            Try
+
+                ''IImageHandler.CapturarComponente(New Point(85, 1), Point.Empty, New Rectangle(New Point(85, 1), New Size(77, 15)), "C:\Unico\x.png")
+
+                'Win32Utils.CaptureWindow(FindWindow(Nothing, "AgentToolbar"), "C:\Unico\x.png")
+
+                'Dim Tempo = ITessHandler.GetText("C:\Unico\x.png")
+
+                'Invoke(New InvokeSimples(Sub() AlteraLabel(Label1, Tempo)))
+
+                Automation = New UIA3Automation
+                Dim windows As AutomationElements.AutomationElement = Automation.GetDesktop()
+
+                Dim TPanelPrincipal = windows.FindFirstDescendant(Function(x) x.ByClassName("TPanel"))
+                If TPanelPrincipal IsNot Nothing Then
+                    If TPanelPrincipal.FindAllChildren().Length > 0 Then
+                        If TPanelPrincipal.FindAllChildren().Length = 6 Then
+                            Invoke(New InvokeSimples(Sub() AlteraLabel(Label2, "Disponível")))
+                        ElseIf TPanelPrincipal.FindAllChildren().Length = 5 Then
+                            Invoke(New InvokeSimples(Sub() AlteraLabel(Label2, "Pausa")))
+                        End If
+                    End If
+                End If
+
+            Catch ex As Exception
+
+            End Try
+            Thread.Sleep(3000)
+        End While
+    End Sub
