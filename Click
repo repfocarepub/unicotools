@@ -1,31 +1,5 @@
- <DllImport("User32.dll", SetLastError:=True)>
-    <MarshalAs(UnmanagedType.Bool)>
-    Private Shared Function PrintWindow(ByVal hwnd As IntPtr, ByVal hDC As IntPtr, ByVal nFlags As UInteger) As Boolean
-    <DllImport("user32.dll")>
-    Private Shared Function GetWindowRect(ByVal handle As IntPtr, ByRef rect As Rectangle) As Boolean
-    <DllImport("user32.dll", SetLastError:=True)>
-    Private Shared Function FindWindow(ByVal lpClassName As String, ByVal lpWindowName As String) As IntPtr
-
-    Public Sub CaptureWindow(ByVal handle As IntPtr)
-        Dim rect As Rectangle = New Rectangle()
-        GetWindowRect(handle, rect)
-        rect.Width = rect.Width - rect.X
-        rect.Height = rect.Height - rect.Y
-
-        Using bitmap As Bitmap = New Bitmap(rect.Width, rect.Height)
-
-            Using g As Graphics = Graphics.FromImage(bitmap)
-                Dim hdc As IntPtr = g.GetHdc()
-
-                If Not PrintWindow(handle, hdc, 0) Then
-                    Dim [error] As Integer = Marshal.GetLastWin32Error()
-                    Dim exception = New System.ComponentModel.Win32Exception([error])
-                    Debug.WriteLine("ERROR: " & [error] & ": " & exception.Message)
-                End If
-
-                g.ReleaseHdc(hdc)
-            End Using
-
-            bitmap.Save("Example.png")
-        End Using
-    End Sub
+Mapeamento dos elementos da chamada - 2 dias
+Leitura, armazenamento e exibição dados cliente/ligação - 2 dias
+Integração QA (Carregamento dinâmico dos motivos e automatização tabulação) - 3 dias
+Integração banco de dados - 2 dias
+Finalização venda Oi 360 - 2 dias
